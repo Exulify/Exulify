@@ -1,4 +1,62 @@
-export default function register() {
+'use client';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
+export default function Register() {
+  const router = useRouter();
+  const [form, setForm] = useState({
+    username: '',
+    password: '',
+    nis: '',
+    nama: ''
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleRegister = async () => {
+    if (!form.username || !form.password || !form.nis || !form.nama) {
+      setError('Username, NIS, dan Password wajib diisi.');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError('');
+
+      const res = await fetch('http://localhost:3000/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          username: form.username,
+          password: form.password,
+          nama: form.nama,
+          nis: form.nis,
+          kelas: null,
+          alamat: null,
+          no_hp: null,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Gagal register.');
+
+      router.push('/login');
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#5B9BD5] via-[#4A8BC2] to-[#2D5F7F] flex items-center justify-center p-4">
       <div className="bg-gradient-to-b from-gray-100 to-gray-200 rounded-3xl shadow-2xl p-10 w-full max-w-md">
@@ -8,44 +66,61 @@ export default function register() {
         </div>
 
         <div className="space-y-3">
-          <div>
-            <input
-              type="email"
-              placeholder="Email"
-              className="w-full px-5 py-3.5 bg-white border-0 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm text-sm"
-            />
-          </div>
+          <input
+            type="text"
+            name="username"
+            placeholder="Email / Username"
+            value={form.username}
+            onChange={handleChange}
+            className="w-full px-5 py-3.5 bg-white border-0 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm text-sm"
+          />
 
-          <div>
-            <input
-              type="number"
-              placeholder="NIS"
-              className="w-full px-5 py-3.5 bg-white border-0 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm text-sm"
-            />
-          </div>
+          <input
+            type="text"
+            name="nama"
+            placeholder="Nama Lengkap"
+            value={form.nama}
+            onChange={handleChange}
+            className="w-full px-5 py-3.5 bg-white border-0 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm text-sm"
+          />
 
-          <div>
-            <input
-              type="password"
-              placeholder="Password"
-              className="w-full px-5 py-3.5 bg-white border-0 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm text-sm"
-            />
-          </div>
+          <input
+            type="number"
+            name="nis"
+            placeholder="NIS"
+            value={form.nis}
+            onChange={handleChange}
+            className="w-full px-5 py-3.5 bg-white border-0 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm text-sm"
+          />
+
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={handleChange}
+            className="w-full px-5 py-3.5 bg-white border-0 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm text-sm"
+          />
+
+          {error && <p className="text-sm text-red-600 text-center mt-3">{error}</p>}
 
           <div className="flex justify-end">
             <button
               type="button"
+              onClick={() => router.push('/login')}
               className="text-xs text-blue-600 hover:text-blue-700 transition-colors"
             >
-              Doesn't have an account?
+              Already have an account?
             </button>
           </div>
 
           <button
+            onClick={handleRegister}
+            disabled={loading}
             type="button"
-            className="w-full bg-gradient-to-r from-[#2D5F7F] to-[#1F4A61] text-white py-3.5 rounded-xl font-medium hover:from-[#234A5E] hover:to-[#183A4A] transition-all shadow-lg hover:shadow-xl text-base mt-16"
+            className="w-full bg-gradient-to-r from-[#2D5F7F] to-[#1F4A61] text-white py-3.5 rounded-xl font-medium hover:from-[#234A5E] hover:to-[#183A4A] transition-all shadow-lg hover:shadow-xl text-base mt-10 disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            Register
+            {loading ? 'Registering...' : 'Register'}
           </button>
         </div>
       </div>
