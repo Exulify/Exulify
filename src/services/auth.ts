@@ -1,6 +1,12 @@
 import Cookies from 'js-cookie';
 import { apiFetch } from '@/app/lib/db';
 
+// interface AuthResponse{
+//   success: boolean;
+//   token?: string;
+//   message?: string;
+// }
+
 export async function loginUser(username: string, password: string) {
   const data = await apiFetch('/auth/login', {
     method: 'POST',

@@ -3,8 +3,14 @@
 import { Calendar, CheckCircle, AlertCircle } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import Sidebar from '../components/Sidebar';
+import { useSession } from '@/services/hooks/userSession';
+import Image from 'next/image';
+
 
 export default function StudentDashboard() {
+
+  const { user, loading: loadingSession, error: sessionError } = useSession();
+
   return (
     <div className="flex h-screen bg-gray-50">
 
@@ -14,7 +20,7 @@ export default function StudentDashboard() {
         <div className="p-8">
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Halo, Riza!</h1>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">{loadingSession ? '...' : user?.name ? `Halo, ${user.name} ! ` : user?.id ? `Halo, user ${user.id}` : 'Halo! Selamat Datang'}</h1>
               <p className="text-gray-600 text-sm mt-1">Welcome back to your student dashboard</p>
             </div>
             <h2 className="text-2xl font-bold text-gray-900">Student Dashboard</h2>
@@ -80,7 +86,7 @@ export default function StudentDashboard() {
             <div className="bg-white rounded-2xl p-8 shadow-sm flex flex-col">
               <h3 className="text-xl font-bold text-gray-900 mb-6">Daily Activity</h3>
               <div className="flex-1 flex flex-col items-center justify-center text-center">
-                <div className="text-6xl mb-4">💧</div>
+                <div className="text-6xl mb-4"><Image src="/onstreak.png" alt="offsteak" width={100} height={20}/></div>
                 <p className="text-blue-500 font-medium text-sm">You aren't record any</p>
                 <p className="text-blue-500 font-medium text-sm">Presence this day</p>
               </div>

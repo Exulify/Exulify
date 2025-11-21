@@ -10,9 +10,12 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
   });
 
   if (!res.ok) {
-    const error = await res.json().catch(() => ({ message: 'Unknown error' }));
-    throw new Error(error.message || res.statusText);
-  }
+    let errorBody: any = {};
+    try {
+      errorBody = await res.json();
+    } catch (_) {}
 
-  return res.json();
+    throw new Error(errorBody.message || res.statusText);
+  }
+  return res.json() as any;
 }

@@ -6,7 +6,6 @@ type SessionUser = {
   role?: string;
   nama?: string;
   username?: string;
-  // add more fields if you include them in JWT or session response
   [k: string]: any;
 };
 
@@ -60,4 +59,8 @@ export function useSession() {
   }, []);
 
   return { user, loading, error };
+}
+
+export function endSession(){
+  const [user, setUser] = useState<SessionUser | null>(null)
 }

@@ -4,7 +4,7 @@ import { Calendar, CheckCircle, AlertCircle } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import Sidebar from '../components/Sidebar';
 
-export default function AdminDashboard() {
+export default function SiswaDashboard() {
   return (
     <div className="flex h-screen bg-gray-50">
 

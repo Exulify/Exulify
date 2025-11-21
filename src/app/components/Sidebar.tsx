@@ -8,13 +8,13 @@ export default function Sidebar(){
             </div>
 
             <nav className="flex-1 space-y-4">
-            <button className="w-full flex items-center gap-3 px-4 py-3 rounded-full font-medium bg-white bg-opacity-25 backdrop-blur">
-                <Home className="w-5 h-5" />
-                Home
+            <button className="w-full flex items-center gap-3 px-4 py-3 rounded-full font-medium bg-blue-400 bg-opacity-25 backdrop-blur">
+                <TrendingUp className="w-10 h-10" />
+                Dashboard
             </button>
             <button className="w-full flex items-center gap-3 px-4 py-3 rounded-full font-medium hover:bg-white hover:bg-opacity-10 transition-all">
-                <TrendingUp className="w-5 h-5" />
-                Dashboard
+                <Home className="w-5 h-5" />
+                Home
             </button>
             <button className="w-full flex items-center gap-3 px-4 py-3 rounded-full font-medium hover:bg-white hover:bg-opacity-10 transition-all">
                 <Settings className="w-5 h-5" />
