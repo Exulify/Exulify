@@ -4,6 +4,7 @@ import { BookOpen, Music, Trophy, Palette, Code, Users, Dumbbell, Globe, CheckCi
 import { useSession } from '@/services/hooks/userSession';
 import { joinEskul, getEskulUser } from '@/services/eskul';
 import Link from 'next/link';
+import ForbiddenPage from './forbidden';
 
 interface Eskul {
   id: number;
@@ -17,7 +18,6 @@ export default function HomePage() {
   const [eskul, setEskul] = useState<Eskul[]>([]);
   const [loadingEskul, setLoadingEskul] = useState(true);
   const [errorEskul, setErrorEskul] = useState<string | null>(null);
-  const [daftarEskul, setDaftarEskul] = useState<string | null>(null);
   const [jumlahEskul, setJumlahEskul] = useState(0);
 
   const { user, loading: loadingSession, error: sessionError } = useSession();
@@ -79,6 +79,9 @@ export default function HomePage() {
       alert("Gagal daftar: " + res.message);
     }
   };
+    if (!user) {
+      return <ForbiddenPage />;
+    }
 
   if (loadingEskul)
     return (
@@ -93,6 +96,9 @@ export default function HomePage() {
         Error: {errorEskul}
       </div>
     );
+
+
+
 
   const icons = [<Users key="u"/>, <Music key="m"/>, <Trophy key="t"/>, <Palette key="p"/>, <Code key="c"/>, <BookOpen key="b"/>, <Dumbbell key="d"/>, <Globe key="g"/>];
 

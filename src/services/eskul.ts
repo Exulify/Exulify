@@ -31,3 +31,27 @@ export async function getEskulUser(id_siswa: number) {
   return await apiFetch(`/eskul/siswa/${id_siswa}`);
 }
 
+interface addKehadiranPayload {
+  id_pendaftar: number,
+  tanggal: string,
+  keterangan: 'Hadir'
+}
+
+export async function addKehadiran(payload: addKehadiranPayload){
+  try {
+    const data = await apiFetch('/eskul/add-pendaftar', {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: 'include',
+    body: JSON.stringify(payload)
+  });
+  
+  return (data)
+  
+  } catch (error) {
+    console.error("Error menambahkan kehadiran", error);
+    return { success: false, message: 'Terjadi Kesalahan saat menambahkan Kehadiran.' }
+  }
+}

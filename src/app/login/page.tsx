@@ -2,7 +2,6 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 
 
 
@@ -46,7 +45,11 @@ export default function Login() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Login gagal.');
 
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+
       router.push('/home');
+
     } catch (err: any) {
       setError(err.message);
     } finally {
