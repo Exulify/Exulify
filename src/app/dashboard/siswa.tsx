@@ -19,16 +19,14 @@ export default function StudentDashboard() {
   const { user, loading: loadingSession, error: sessionError } = useSession();
   const [isRecording, setIsRecording] = useState(false);
   const [recordMessage, setRecordMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
-
-  // Ambil ID Pendaftar dari sesi. Perhatikan bahwa di backend,
-  // Anda mengisi 'id_pendaftaran' dari tabel pendaftaran ke object user.
-  // Maka, gunakan user.id_pendaftar.
+  const [jumlahEskul, setJumlahEskul] = useState(0);
   const id_pendaftaran = user?.id_pendaftaran;
+
+  
   
   const handleAddKehadiran = async () => {
-    setRecordMessage(null); // Reset pesan
-    
-    // Periksa apakah sesi telah dimuat, user ada, dan id_pendaftar tersedia
+    setRecordMessage(null)
+
     if (loadingSession || !id_pendaftaran) {
       if (!id_pendaftaran) {
         setRecordMessage({ type: 'error', text: 'Error: ID Pendaftar tidak ditemukan dalam sesi.' });
@@ -38,9 +36,8 @@ export default function StudentDashboard() {
 
     setIsRecording(true);
 
-    const today = new Date().toISOString().split('T')[0]; // Format YYYY-MM-DD
-    
-    // Payload dengan keterangan hardcode 'Hadir'
+    const today = new Date().toISOString().split('T')[0];
+
     const payload: KehadiranPayload = {
       id_pendaftaran: id_pendaftaran,
       tanggal: today,
@@ -95,7 +92,7 @@ export default function StudentDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-600 text-sm font-medium">Ekstrakurikuler Di ikuti</p>
-                  <p className="text-4xl font-bold text-gray-900 mt-2">0</p>
+                  <p className="text-4xl font-bold text-gray-900 mt-2">{jumlahEskul}</p>
                 </div>
                 <Calendar className="w-12 h-12 text-blue-400 opacity-20" />
               </div>

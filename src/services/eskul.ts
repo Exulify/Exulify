@@ -32,7 +32,7 @@ export async function getEskulUser(id_siswa: number) {
 }
 
 interface addKehadiranPayload {
-  id_pendaftar: number,
+  id_pendaftaran: number,
   tanggal: string,
   keterangan: 'Hadir'
 }
