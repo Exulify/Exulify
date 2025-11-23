@@ -24,7 +24,7 @@ export default function Login() {
 
   const handleLogin = async () => {
     if (!form.username || !form.password) {
-      setError('Email dan Password wajib diisi.');
+      setError('Email / Username dan Password wajib diisi.');
       return;
     }
 
@@ -69,7 +69,7 @@ export default function Login() {
           <div>
             <input
               type="email"
-              placeholder="Email"
+              placeholder="Email or Username"
               name="username"
               value={form.username}
               onChange={handleChange}

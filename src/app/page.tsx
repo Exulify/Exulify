@@ -1,13 +1,16 @@
 'use client'
 
-import Login from "./login/page";
+import { redirect } from 'next/navigation'
 import { useSession } from '@/services/hooks/userSession';
 
 export default function Home() {
+  const { user, loading: loadingSession } = useSession();
 
-  const { user, loading: loadingSession, error: sessionError } = useSession();
+  // if (loadingSession) {
+  //   return <div>Loading...</div>;
+  // }
 
   if (!user) {
-      return <Login />;
-    }
+    redirect(`/login`)
+  }
 }

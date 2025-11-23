@@ -5,6 +5,7 @@ import { useSession } from '@/services/hooks/userSession';
 import { joinEskul, getEskulUser } from '@/services/eskul';
 import Link from 'next/link';
 import ForbiddenPage from './forbidden';
+import Sidebar from '../components/Sidebar';
 
 interface Eskul {
   id: number;
@@ -103,19 +104,11 @@ export default function HomePage() {
   const icons = [<Users key="u"/>, <Music key="m"/>, <Trophy key="t"/>, <Palette key="p"/>, <Code key="c"/>, <BookOpen key="b"/>, <Dumbbell key="d"/>, <Globe key="g"/>];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <nav className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-[#2D5F7F] to-[#5B9BD5] bg-clip-text text-transparent">
-            Exulify
-          </h1>
-          <div className="flex items-center space-x-4 font-bold">
-            <Link href={"/dashboard"} className='w-full flex items-center gap-3 px-4 py-3 rounded-full font-medium bg-gradient-to-r from-[#2D5F7F] to-[#5B9BD5] backdrop-blur'>Dashboard</Link>
-            <Link href={"/"} className='w-full flex items-center gap-3 px-4 py-3 rounded-full font-medium bg-gradient-to-r from-[#2D5F7F] to-[#5B9BD5] backdrop-blur'>Profile</Link>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex">
 
+      <Sidebar />
+
+    <div className="flex-1 px-8">
       {sessionError && <div className="text-sm text-red-500 p-2">Session: {sessionError}</div>}
 
       <div className="mb-12 m-16">
@@ -159,7 +152,7 @@ export default function HomePage() {
         {eskul.map((item, index) => (
           <div
             key={item.id}
-            className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer hover:-translate-y-1"
+            className="bg-white rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer hover:-translate-y-1"
           >
             <div className="h-24 bg-gradient-to-r from-[#5B9BD5] to-[#2D5F7F] flex items-center justify-center text-white opacity-80 group-hover:opacity-100 transition-opacity">
               {icons[index % icons.length]}
@@ -182,6 +175,7 @@ export default function HomePage() {
           </div>
         ))}
       </div>
+    </div>
     </div>
   );
 }
