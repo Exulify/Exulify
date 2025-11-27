@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Users, Plus, Edit2, Trash2, Loader2, ChevronDown, X } from 'lucide-react';
+import { Plus, Edit2, Trash2, Loader2, X } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import { getAllUsers, createUser, updateUserRole, deleteUser, User, CreateUserPayload } from '@/services/user';
 import { useSession } from '@/services/hooks/userSession';
@@ -170,7 +170,6 @@ export default function AdminDashboard() {
             </div>
           )}
 
-          {/* Stats Cards */}
           <div className="grid grid-cols-4 gap-6 mb-8">
             <div className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
               <p className="text-gray-600 text-sm font-medium">Total Pengguna</p>
@@ -190,7 +189,6 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {/* Users Table */}
           <div className="bg-white rounded-2xl p-8 shadow-sm">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold text-gray-900">Daftar Pengguna</h2>
@@ -223,8 +221,8 @@ export default function AdminDashboard() {
                   <tbody>
                     {filteredUsers.map((user) => (
                       <tr key={user.id} className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
-                        <td className="py-3 px-4 text-gray-900">{user.username}</td>
-                        <td className="py-3 px-4 text-gray-900">{user.nama}</td>
+                        <td className="py-3 px-4 text-black">{user.username}</td>
+                        <td className="py-3 px-4 text-black">{user.nama}</td>
                         <td className="py-3 px-4">
                           {editingUserId === user.id ? (
                             <select

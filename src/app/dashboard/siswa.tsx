@@ -172,7 +172,6 @@ export default function StudentDashboard() {
           </div>
 
           <div className="grid grid-cols-3 gap-6 mb-8">
-            {/* ... (Weekly Activity Chart) ... */}
             <div className="col-span-2 bg-white rounded-2xl p-8 shadow-sm">
               <h3 className="text-xl font-bold text-gray-900 mb-6">Weekly Activity</h3>
 
@@ -250,8 +249,6 @@ export default function StudentDashboard() {
               )}
             </div>
           </div>
-
-          {/* ... (Recent Presence Records) ... */}
           <div className="bg-white rounded-2xl p-8 shadow-sm">
             <h3 className="text-xl font-bold text-gray-900 mb-6">Recent Presence Records</h3>
             <div className="space-y-3">

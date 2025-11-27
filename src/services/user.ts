@@ -17,8 +17,8 @@ export interface CreateUserPayload {
   nama: string;
   password: string;
   role: 'siswa' | 'pembina' | 'admin';
-  nis?: string; // Required for siswa
-  nip?: string; // Required for pembina
+  nis?: string;
+  nip?: string;
 }
 
 export interface UpdateUserRolePayload {
@@ -26,7 +26,6 @@ export interface UpdateUserRolePayload {
   role: 'siswa' | 'pembina' | 'admin';
 }
 
-// Get all users
 export async function getAllUsers() {
   try {
     const data = await apiFetch('/user', {
@@ -40,7 +39,6 @@ export async function getAllUsers() {
   }
 }
 
-// Create new user
 export async function createUser(payload: CreateUserPayload) {
   try {
     const data = await apiFetch('/user/create', {
@@ -58,7 +56,6 @@ export async function createUser(payload: CreateUserPayload) {
   }
 }
 
-// Update user role
 export async function updateUserRole(payload: UpdateUserRolePayload) {
   try {
     const data = await apiFetch('/user/update-role', {
@@ -76,7 +73,6 @@ export async function updateUserRole(payload: UpdateUserRolePayload) {
   }
 }
 
-// Delete user
 export async function deleteUser(id: number) {
   try {
     const data = await apiFetch(`/user/delete/${id}`, {
