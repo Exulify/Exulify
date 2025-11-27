@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { BookOpen, Music, Trophy, Palette, Code, Users, Dumbbell, Globe, CheckCircle, Calendar, AlertCircle } from 'lucide-react';
 import { useSession } from '@/services/hooks/userSession';
 import { joinEskul, getEskulUser } from '@/services/eskul';
-import Link from 'next/link';
 import ForbiddenPage from './forbidden';
 import Sidebar from '../components/Sidebar';
 

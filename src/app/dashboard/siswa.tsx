@@ -1,31 +1,89 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Calendar, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import Sidebar from '../components/Sidebar';
+import { EskulDropdown } from '../components/DropdownEskul';
 import { useSession } from '@/services/hooks/userSession';
+import { getEskulUser } from '@/services/eskul';
 import { addKehadiran } from '@/services/eskul';
 import Image from 'next/image';
 
-// Asumsi tipe payload Anda
-interface KehadiranPayload {
-  id_pendaftaran: number;
-  tanggal: string;
-  keterangan: 'Hadir'; // Hardcoded sesuai permintaan
+interface Eskul {
+  id: number;
+  nama: string;
+  deskripsi: string;
+  jadwal: string;
+  id_pembina: number;
 }
 
 export default function StudentDashboard() {
   const { user, loading: loadingSession, error: sessionError } = useSession();
   const [isRecording, setIsRecording] = useState(false);
   const [recordMessage, setRecordMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [loadingEskul, setLoadingEskul] = useState(true);
+  const [errorEskul, setErrorEskul] = useState<string | null>(null);
+  const [eskul, setEskul] = useState<Eskul[]>([]);
   const [jumlahEskul, setJumlahEskul] = useState(0);
-  const id_pendaftaran = user?.id_pendaftaran;
+  const [selectedEskul, setSelectedEskul] = useState<Eskul | null>(null);
+  
+  // // Debug: log user object to console
+  // useEffect(() => {
+  //   if (user) {
+  //     // eslint-disable-next-line no-console
+  //     console.log('[DEBUG] User session data:', user);
+  //   }
+  // }, [user]);
 
+  const id_pendaftaran = user?.id_pendaftar;
+
+    useEffect(() => {
+      const fetchData = async () => {
+        if (!user?.id_siswa) return;
+        const res = await getEskulUser(user.id_siswa);
+        if (res.success) {
+          setJumlahEskul(res.data?.length || 0);
+        }
+      };
+      fetchData();
+    }, [user]);
   
-  
+    useEffect(() => {
+      let mounted = true;
+      const base = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000';
+    
+      const fetchEskul = async () => {
+        try {
+          setLoadingEskul(true);
+          const res = await fetch(`${base}/api/eskul`, {
+            credentials: 'include',
+          });
+          const json = await res.json();
+          if (!mounted) return;
+    
+          if (!res.ok) throw new Error(json.message || `HTTP ${res.status}`);
+          setEskul(json.data || []);
+          setErrorEskul(null);
+        } catch (err: any) {
+          if (!mounted) return;
+          setErrorEskul(err.message || 'Failed to fetch eskul.');
+        } finally {
+          if (mounted) setLoadingEskul(false);
+        }
+      };
+    
+    fetchEskul();
+    return () => { mounted = false; };
+  }, []);
+
   const handleAddKehadiran = async () => {
-    setRecordMessage(null)
+    setRecordMessage(null);
+
+    if (!selectedEskul) {
+      setRecordMessage({ type: 'error', text: 'Pilih ekstrakurikuler terlebih dahulu.' });
+      return;
+    }
 
     if (loadingSession || !id_pendaftaran) {
       if (!id_pendaftaran) {
@@ -38,19 +96,25 @@ export default function StudentDashboard() {
 
     const today = new Date().toISOString().split('T')[0];
 
-    const payload: KehadiranPayload = {
+    const payload = {
       id_pendaftaran: id_pendaftaran,
       tanggal: today,
-      keterangan: 'Hadir'
+      keterangan: 'Hadir' as const
     };
 
     try {
       const result = await addKehadiran(payload);
       
       if (result.success) {
-        setRecordMessage({ type: 'success', text: `Kehadiran berhasil dicatat untuk ${today}!` });
+        setRecordMessage({ 
+          type: 'success', 
+          text: `Kehadiran berhasil dicatat untuk ${selectedEskul.nama} pada ${today}!` 
+        });
       } else {
-        setRecordMessage({ type: 'error', text: result.message || 'Gagal mencatat kehadiran.' });
+        setRecordMessage({ 
+          type: 'error', 
+          text: result.message || 'Gagal mencatat kehadiran.' 
+        });
       }
       
     } catch (error) {
@@ -59,14 +123,12 @@ export default function StudentDashboard() {
     } finally {
       setIsRecording(false);
     }
-  };
-
-  return (
+  };  return (
     <div className="flex h-screen bg-gray-50">
 
         <Sidebar />
 
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-auto m-8">
         <div className="p-8">
           <div className="flex justify-between items-center mb-8">
             <div>
@@ -135,25 +197,39 @@ export default function StudentDashboard() {
               </ResponsiveContainer>
             </div>
 
-            {/* Daily Activity & Record Presence Button */}
             <div className="bg-white rounded-2xl p-8 shadow-sm flex flex-col">
-              <h3 className="text-xl font-bold text-gray-900 mb-6">Daily Activity</h3>
-              <div className="flex-1 flex flex-col items-center justify-center text-center">
+              <h3 className="text-xl font-bold text-gray-900 mb-6">Record Presence</h3>
+              <div className="flex-1 flex flex-col">
                 
                 {recordMessage && (
-                  <div className={`p-2 mb-4 w-full text-sm rounded ${recordMessage.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                  <div className={`p-3 mb-4 w-full text-sm rounded-lg ${recordMessage.type === 'success' ? 'bg-green-100 text-green-700 border border-green-300' : 'bg-red-100 text-red-700 border border-red-300'}`}>
                     {recordMessage.text}
                   </div>
                 )}
-                
-                <div className="text-6xl mb-4"><Image src="/onstreak.png" alt="offsteak" width={100} height={20}/></div>
-                <p className="text-blue-500 font-medium text-sm">You aren't record any</p>
-                <p className="text-blue-500 font-medium text-sm">Presence this day</p>
+
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Ekstrakurikuler
+                  </label>
+                  <EskulDropdown 
+                    selectedId={selectedEskul?.id}
+                    onSelect={setSelectedEskul}
+                  />
+                </div>
+
+                {selectedEskul && (
+                  <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p className="text-sm text-blue-800">
+                      <span className="font-medium">Dipilih:</span> {selectedEskul.nama}
+                    </p>
+                    <p className="text-xs text-blue-600 mt-1">Jadwal: {selectedEskul.jadwal}</p>
+                  </div>
+                )}
               </div>
               
               <button 
                 onClick={handleAddKehadiran}
-                disabled={isRecording || loadingSession || !id_pendaftaran}
+                disabled={isRecording || loadingSession || !id_pendaftaran || !selectedEskul}
                 className="w-full py-3 bg-gradient-to-r from-[#5B9BD5] to-[#2D5F7F] text-white rounded-xl font-medium hover:shadow-lg transition-shadow text-sm disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
               >
                 {isRecording ? (
@@ -168,6 +244,9 @@ export default function StudentDashboard() {
               
               {!id_pendaftaran && !loadingSession && (
                  <p className="text-xs text-red-500 mt-2 text-center">Tidak memiliki ID Pendaftar.</p>
+              )}
+              {!selectedEskul && (
+                 <p className="text-xs text-orange-500 mt-2 text-center">Pilih ekstrakurikuler untuk merekam kehadiran.</p>
               )}
             </div>
           </div>

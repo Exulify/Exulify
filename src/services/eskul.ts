@@ -39,17 +39,17 @@ interface addKehadiranPayload {
 
 export async function addKehadiran(payload: addKehadiranPayload){
   try {
-    const data = await apiFetch('/eskul/add-pendaftar', {
-    method: 'POST',
-    headers: {
-      "Content-Type": "application/json"
-    },
-    credentials: 'include',
-    body: JSON.stringify(payload)
-  });
-  
-  return (data)
-  
+    const data = await apiFetch('/eskul/add-kehadiran', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: 'include',
+      body: JSON.stringify(payload)
+    });
+    
+    return (data)
+    
   } catch (error) {
     console.error("Error menambahkan kehadiran", error);
     return { success: false, message: 'Terjadi Kesalahan saat menambahkan Kehadiran.' }
